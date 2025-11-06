@@ -1,6 +1,6 @@
 import AppLayout from "@/Layouts/AppLayout";
 import { Link, usePage, router } from "@inertiajs/react";
-import { Shield, ShieldCheck, Pencil, Trash } from "lucide-react";
+import { ShieldBan, ShieldHalf, Pencil, Trash } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -38,7 +38,7 @@ export default function Index({ matches }) {
                   <div className="flex flex-col space-y-3">
                     {/* Team 1 */}
                     <div className="flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-red-600" />
+                      <ShieldBan className="w-5 h-5 text-red-600" />
                       <span className="font-medium text-gray-800 w-28 truncate">
                         {match.team1_name}
                       </span>
@@ -49,7 +49,7 @@ export default function Index({ matches }) {
 
                     {/* Team 2 */}
                     <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-blue-600" />
+                      <ShieldHalf className="w-5 h-5 text-blue-600" />
                       <span className="font-medium text-gray-800 w-28 truncate">
                         {match.team2_name}
                       </span>
