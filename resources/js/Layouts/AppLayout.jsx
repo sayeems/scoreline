@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function AppLayout({ title, children }) {
   const { auth } = usePage().props;
@@ -90,6 +91,7 @@ export default function AppLayout({ title, children }) {
 
       {/* Page Content */}
       <main className="pt-[64px]">{children}</main>
+      <Toaster /> {/* ✅ global toast container */}
     </div>
   );
 }

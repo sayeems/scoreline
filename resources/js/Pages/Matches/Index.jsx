@@ -33,41 +33,40 @@ export default function Index({ matches }) {
                 href={route("matches.show", match.slug)}
                 className="block hover:scale-[1.01] transition-transform"
               >
-                {/* Teams */}
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col space-y-3">
-                    {/* Team 1 */}
-                    <div className="flex items-center gap-2">
-                      <ShieldBan className="w-5 h-5 text-red-600" />
-                      <span className="font-medium text-gray-800 w-28 truncate">
-                        {match.team1_name}
-                      </span>
-                      <span className="font-bold text-gray-900">
-                        {match.team1_score}
-                      </span>
-                    </div>
-
-                    {/* Team 2 */}
-                    <div className="flex items-center gap-2">
-                      <ShieldHalf className="w-5 h-5 text-blue-600" />
-                      <span className="font-medium text-gray-800 w-28 truncate">
-                        {match.team2_name}
-                      </span>
-                      <span className="font-bold text-gray-900">
-                        {match.team2_score}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <div className="text-right text-sm text-gray-500 min-w-[60px]">
-                    <p className="font-semibold text-gray-700">FT</p>
-                    <p>
-                      {new Date(match.match_date).toLocaleString("en-US", {
+                {/* Top header */}
+                <div className="flex items-center justify-between text-sm text-gray-500 pb-5">
+                  <span>
+                    {new Date(match.match_date).toLocaleString("en-US", {
                         month: "short",
                         day: "numeric",
+                        year: "numeric"
                       })}
-                    </p>
+                  </span>
+                  <span className="text-sm text-gray-700">Full-time</span>
+                </div>
+                {/* Teams */}
+                <div className="flex items-center justify-between">
+                  {/* Team 1 */}
+                  <div className="flex flex-col items-center space-y-2 w-1/3">
+                    <ShieldBan className="w-10 h-10 text-red-600" />
+                    <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
+                      {match.team1_name}
+                    </span>
+                  </div>
+                  {/* Score */}
+                  <div className="flex flex-col items-center justify-center w-1/3">
+                    <div className="flex items-center text-4xl font-bold text-gray-900">
+                      <span>{match.team1_score}</span>
+                      <span className="mx-2 text-gray-400">-</span>
+                      <span>{match.team2_score}</span>
+                    </div>
+                  </div>
+                  {/* Team 2 */}
+                  <div className="flex flex-col items-center space-y-2 w-1/3">
+                    <ShieldHalf className="w-10 h-10 text-blue-600" />
+                    <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
+                      {match.team2_name}
+                    </span>
                   </div>
                 </div>
               </Link>

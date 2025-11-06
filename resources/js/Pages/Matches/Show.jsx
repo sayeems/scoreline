@@ -1,13 +1,18 @@
 import AppLayout from "@/Layouts/AppLayout";
-import { ShieldBan, ShieldHalf, Volleyball, User } from "lucide-react";
+import { ShieldBan, ShieldHalf, Volleyball, User, Pencil, Trash } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link, usePage } from "@inertiajs/react";
+import ShareSection from "@/Components/ShareSection";
 
 export default function Show({ match }) {
+  const { auth } = usePage().props;
   const matchDate = new Date(match.match_date);
   const formattedDate = matchDate.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",
     day: "numeric",
+    year: "numeric",
   });
 
   const team1Goals = match.goals?.filter((g) => g.team_side === "team1") || [];
@@ -63,13 +68,21 @@ export default function Show({ match }) {
                 team1Goals.map((goal, i) => (
                   <p className="text-transform: capitalize" key={i}>
                     {goal.scorer_name}{" "}
-                    {goal.assistor_name && (
-                      <span className="text-gray-500">
-                        ({goal.assistor_name})
-                      </span>
-                    )}{" "}
+                    {goal.assistor_name || goal.score_type !== "regular" ? (
+                    <span className="text-gray-500">
+                        (
+                        {goal.assistor_name
+                        ? goal.assistor_name
+                        : goal.score_type === "penalty"
+                        ? "Pen"
+                        : goal.score_type === "own_goal"
+                        ? "OG"
+                        : ""}
+                        )
+                    </span>
+                    ) : null}
                     {goal.time && (
-                      <span className="text-gray-400 text-xs">{goal.time}'</span>
+                    <span className="text-gray-400 text-xs"> {goal.time}'</span>
                     )}
                   </p>
                 ))
@@ -143,7 +156,33 @@ export default function Show({ match }) {
               </ul>
             </div>
           </div>
+          {auth?.user && auth?.isAdmin && (
+                <div className="flex gap-3 mt-4 pt-3 border-t border-gray-100">
+                  <Link href={route("matches.edit", match.slug)} className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="w-full flex items-center justify-center gap-2"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      Edit Match
+                    </Button>
+                  </Link>
+
+                  <Button
+                    variant="destructive"
+                    className="flex-1 flex items-center justify-center gap-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(match.slug);
+                    }}
+                  >
+                    <Trash className="w-4 h-4" />
+                    Delete
+                  </Button>
+                </div>
+              )}
         </Card>
+        <ShareSection match={match} />
       </div>
     </AppLayout>
   );
