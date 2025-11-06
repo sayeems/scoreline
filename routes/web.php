@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/matches/create', [MatchController::class, 'create'])->name('matches.create');
     Route::get('/matches/{slug}/edit', [MatchController::class, 'edit'])->name('matches.edit');
     Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
+    Route::put('/matches/{slug}', [MatchController::class, 'update'])->name('matches.update');
     Route::delete('/matches/{slug}', [MatchController::class, 'destroy'])->name('matches.destroy');
 });
 

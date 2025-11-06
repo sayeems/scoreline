@@ -26,7 +26,7 @@ export default function Index({ matches }) {
           matches.map((match) => (
             <Card
               key={match.id}
-              className="p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all"
+              className="text-transform: capitalize p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all"
             >
               {/* Clickable area for match details */}
               <Link

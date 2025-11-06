@@ -135,10 +135,12 @@ class MatchController extends Controller
     /**
      * Update existing match
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, $slug)
     {
+        // find the match by slug
         $match = MatchModel::where('slug', $slug)->firstOrFail();
 
+        // validate input
         $validated = $request->validate([
             'title'          => 'required|string|max:255',
             'match_date'     => 'required|date',
@@ -146,27 +148,57 @@ class MatchController extends Controller
             'team1_score'    => 'required|integer',
             'team2_name'     => 'required|string|max:100',
             'team2_score'    => 'required|integer',
-            'team1_players'  => 'nullable|array',
-            'team2_players'  => 'nullable|array',
+            'team1_players'  => 'nullable|string',
+            'team2_players'  => 'nullable|string',
+
+            // same nested validation as store()
+            'goals' => 'nullable|array',
+            'goals.*.team_side' => 'required_with:goals|string|in:team1,team2',
+            'goals.*.scorer_name' => 'required_with:goals|string|max:100',
+            'goals.*.assistor_name' => 'nullable|string|max:100',
+            'goals.*.time' => 'nullable|string|max:10',
+            'goals.*.score_type' => 'nullable|string|in:regular,own_goal,penalty',
         ]);
 
-        $match->update($validated);
+        // convert comma-separated players into arrays
+        $team1Players = $validated['team1_players']
+            ? array_filter(array_map('trim', explode(',', $validated['team1_players'])))
+            : [];
 
-        // Optional: update goals too, if your form supports editing them
-        if ($request->has('goals')) {
-            $match->goals()->delete(); // simple way: remove all and re-insert
-            foreach ($request->goals as $goal) {
-                $match->goals()->create([
-                    'team_side' => $goal['team_side'] ?? 'team1',
-                    'scorer_name' => $goal['scorer_name'] ?? '',
+        $team2Players = $validated['team2_players']
+            ? array_filter(array_map('trim', explode(',', $validated['team2_players'])))
+            : [];
+
+        // update existing match record
+        $match->update([
+            'title'         => $validated['title'],
+            'match_date'    => $validated['match_date'],
+            'team1_name'    => $validated['team1_name'],
+            'team1_score'   => $validated['team1_score'],
+            'team2_name'    => $validated['team2_name'],
+            'team2_score'   => $validated['team2_score'],
+            'team1_players' => $team1Players,
+            'team2_players' => $team2Players,
+        ]);
+
+        // refresh goals (delete old ones first)
+        $match->goals()->delete();
+
+        if (!empty($validated['goals'])) {
+            foreach ($validated['goals'] as $goal) {
+                Goal::create([
+                    'match_id'      => $match->id,
+                    'team_side'     => $goal['team_side'] ?? 'team1',
+                    'scorer_name'   => $goal['scorer_name'] ?? '',
                     'assistor_name' => $goal['assistor_name'] ?? null,
-                    'time' => $goal['time'] ?? null,
-                    'score_type' => $goal['score_type'] ?? 'regular',
+                    'time'          => $goal['time'] ?? null,
+                    'score_type'    => $goal['score_type'] ?? 'regular',
                 ]);
             }
         }
 
-        return redirect()->route('matches.index')->with('success', 'Match updated successfully.');
+        return redirect()->route('matches.show', $match->slug)
+                        ->with('success', 'Match updated successfully.');
     }
 
     /**
