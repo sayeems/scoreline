@@ -27,9 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
     Route::get('/matches/create', [MatchController::class, 'create'])->name('matches.create');
-    Route::get('/matches/update/{slug}', [MatchController::class, 'update'])->name('matches.update');
+    Route::get('/matches/{slug}/edit', [MatchController::class, 'edit'])->name('matches.edit');
+    Route::post('/matches', [MatchController::class, 'store'])->name('matches.store');
     Route::delete('/matches/{slug}', [MatchController::class, 'destroy'])->name('matches.destroy');
 });
 
