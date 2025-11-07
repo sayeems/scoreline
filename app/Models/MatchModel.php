@@ -20,7 +20,9 @@ class MatchModel extends Model
         'team2_score',
         'team1_players',
         'team2_players',
-        'slug',
+        'slug',    
+        'social_title',
+        'social_description',
     ];
 
     protected $casts = [

@@ -26,7 +26,9 @@ export default function Create() {
     team2_name: "",
     team2_score: 0,
     team1_players: "",
-    team2_players: "",
+    team2_players: "",  
+    social_title: "",
+    social_description: "",
   });
 
   function addGoal() {
@@ -151,6 +153,36 @@ export default function Create() {
                     onChange={(e) => setData("team2_players", e.target.value)}
                     placeholder="Wahid, Sayeem, Abdur, Rafi"
                   />
+                </div>
+              </div>
+
+              <Separator />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="social_title">Social Media Title</Label>
+                  <Input
+                    id="social_title"
+                    value={data.social_title}
+                    onChange={(e) => setData("social_title", e.target.value)}
+                    placeholder="e.g. Titans claim 3–1 victory over Vikings!"
+                  />
+                  {errors.social_title && (
+                    <p className="text-sm text-red-500 mt-1">{errors.social_title}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="social_description">Social Media Description</Label>
+                  <Textarea
+                    id="social_description"
+                    rows={1}
+                    value={data.social_description}
+                    onChange={(e) => setData("social_description", e.target.value)}
+                    placeholder="An intense match saw Titans edge out Vikings in a thrilling Saturday showdown."
+                  />
+                  {errors.social_description && (
+                    <p className="text-sm text-red-500 mt-1">{errors.social_description}</p>
+                  )}
                 </div>
               </div>
 

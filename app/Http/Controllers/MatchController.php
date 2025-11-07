@@ -59,6 +59,8 @@ class MatchController extends Controller
             'team2_score'    => 'required|integer',
             'team1_players'  => 'nullable|string',
             'team2_players'  => 'nullable|string',
+            'social_title' => 'required|string|max:255',
+            'social_description' => 'required|string|max:500',
 
             // ✅ Nested goal validation
             'goals' => 'nullable|array',
@@ -150,6 +152,8 @@ class MatchController extends Controller
             'team2_score'    => 'required|integer',
             'team1_players'  => 'nullable|string',
             'team2_players'  => 'nullable|string',
+            'social_title' => 'required|string|max:255',
+            'social_description' => 'required|string|max:500',
 
             // same nested validation as store()
             'goals' => 'nullable|array',
@@ -179,6 +183,8 @@ class MatchController extends Controller
             'team2_score'   => $validated['team2_score'],
             'team1_players' => $team1Players,
             'team2_players' => $team2Players,
+            'social_title' => $validated['social_title'],
+            'social_description' => $validated['social_description'],
         ]);
 
         // refresh goals (delete old ones first)
