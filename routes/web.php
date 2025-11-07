@@ -6,6 +6,21 @@ use App\Http\Controllers\MatchController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+
+Route::get('/storage/previews/{filename}', function ($filename) {
+    $path = storage_path('app/public/previews/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    $mimeType = mime_content_type($path);
+    return Response::make(file_get_contents($path), 200, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+});
+
 Route::get('/sayeems', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
