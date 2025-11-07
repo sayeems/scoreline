@@ -37,12 +37,11 @@ class GenerateMatchPreview implements ShouldQueue
         $filePath = $previewPath . "/{$slug}.jpg";
 
         try {
-            \Spatie\Browsershot\Browsershot::url($url)
-                ->windowSize(1200, 630)
-                ->clipSelector('.card') // ✅ capture only the card
-                ->waitUntilNetworkIdle()
-                ->setDelay(1000)
-                ->save($filePath);
+            Browsershot::url($url)
+            ->windowSize(1200, 630)
+            ->deviceScaleFactor(2)
+            ->waitUntilNetworkIdle()
+            ->save($filePath);
         } catch (\Throwable $e) {
             \Log::error("Failed to generate preview for {$slug}: " . $e->getMessage());
         }
