@@ -106,7 +106,7 @@ class MatchController extends Controller
         }
 
         // (optional) trigger image generation for OG preview here later
-        // e.g., dispatch(new GenerateMatchCardImage($match));
+        dispatch(new \App\Jobs\GenerateMatchPreview($match));
 
         return redirect()->route('matches.index')->with('success', 'Match created successfully.');
     }
@@ -197,8 +197,29 @@ class MatchController extends Controller
             }
         }
 
+        dispatch(new \App\Jobs\GenerateMatchPreview($match));
+
         return redirect()->route('matches.show', $match->slug)
                         ->with('success', 'Match updated successfully.');
+    }
+
+    /**
+     * Share preview
+     */    
+    public function shareview($slug)
+    {
+        $match = MatchModel::with('goals')->where('slug', $slug)->firstOrFail();
+
+        // ✅ Safely handle both array and JSON-string cases
+        $match->team1_players = is_string($match->team1_players)
+            ? json_decode($match->team1_players, true)
+            : ($match->team1_players ?? []);
+
+        $match->team2_players = is_string($match->team2_players)
+            ? json_decode($match->team2_players, true)
+            : ($match->team2_players ?? []);
+
+        return view('shareview', compact('match'));
     }
 
     /**

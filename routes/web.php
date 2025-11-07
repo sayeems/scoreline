@@ -34,4 +34,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/matches/{slug}', [MatchController::class, 'destroy'])->name('matches.destroy');
 });
 
+Route::get('/shareview/{slug}', [MatchController::class, 'shareview'])->name('matches.shareview');
+
 require __DIR__.'/auth.php';
