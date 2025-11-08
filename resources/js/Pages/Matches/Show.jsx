@@ -18,6 +18,15 @@ export default function Show({ match }) {
   const team1Goals = match.goals?.filter((g) => g.team_side === "team1") || [];
   const team2Goals = match.goals?.filter((g) => g.team_side === "team2") || [];
 
+  const handleDelete = (slug) => {
+    if (confirm("Are you sure you want to delete this match?")) {
+      router.delete(route("matches.destroy", slug), {
+        preserveScroll: true,
+      });
+    }
+  };
+  
+
   return (
     <AppLayout title={match.title}>
       <div className="max-w-3xl mx-auto py-10 px-4 space-y-6 text-center">

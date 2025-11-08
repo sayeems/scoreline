@@ -289,6 +289,16 @@ export default function Edit({ match }) {
                   </Card>
                 ))}
               </div>
+              <div>
+                <Label htmlFor="image">Upload Match Image</Label>
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setData("image", e.target.files[0])}
+                />
+                {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+              </div>
             </CardContent>
 
             <CardFooter className="flex justify-end">

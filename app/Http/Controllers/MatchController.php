@@ -35,7 +35,7 @@ class MatchController extends Controller
 
         // detect crawler user-agents (for OG preview)
         $ua = $request->header('User-Agent', '');
-        if (preg_match('/facebookexternalhit|Twitterbot|LinkedInBot|WhatsApp/i', $ua)) {
+        if (preg_match('/facebookexternalhit|Twitterbot|LinkedInBot|Slackbot|Discordbot|TelegramBot|WhatsApp|SkypeUriPreview/i', $ua)) {
             return response()->view('match-share', compact('match'));
         }
 
@@ -61,6 +61,7 @@ class MatchController extends Controller
             'team2_players'  => 'nullable|string',
             'social_title' => 'required|string|max:255',
             'social_description' => 'required|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // 2MB limit
 
             // ✅ Nested goal validation
             'goals' => 'nullable|array',
@@ -80,6 +81,12 @@ class MatchController extends Controller
             ? array_filter(array_map('trim', explode(',', $validated['team2_players'])))
             : [];
 
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('matches', 'public');
+        } else {
+            $validated['image'] = null;
+        }
+
         // create match record
         $match = MatchModel::create([
             'title'         => $validated['title'],
@@ -88,8 +95,11 @@ class MatchController extends Controller
             'team1_score'   => $validated['team1_score'],
             'team2_name'    => $validated['team2_name'],
             'team2_score'   => $validated['team2_score'],
+            'social_title'  => $validated['social_title'],
+            'social_description' => $validated['social_description'],
             'team1_players' => $team1Players ?? [],
             'team2_players' => $team2Players ?? [],
+            'image_path' => $validated['image'],
             'slug'          => Str::random(6),
         ]);
 
@@ -108,7 +118,7 @@ class MatchController extends Controller
         }
 
         // (optional) trigger image generation for OG preview here later
-        dispatch(new \App\Jobs\GenerateMatchPreview($match));
+        // dispatch(new \App\Jobs\GenerateMatchPreview($match));
 
         return redirect()->route('matches.index')->with('success', 'Match created successfully.');
     }
@@ -154,6 +164,7 @@ class MatchController extends Controller
             'team2_players'  => 'nullable|string',
             'social_title' => 'required|string|max:255',
             'social_description' => 'required|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // 2MB limit
 
             // same nested validation as store()
             'goals' => 'nullable|array',
@@ -172,6 +183,13 @@ class MatchController extends Controller
         $team2Players = $validated['team2_players']
             ? array_filter(array_map('trim', explode(',', $validated['team2_players'])))
             : [];
+
+        if ($request->hasFile('image')) {
+            if ($match->image_path && Storage::disk('public')->exists($match->image_path)) {
+                Storage::disk('public')->delete($match->image_path);
+            }
+            $match->image_path = $request->file('image')->store('matches', 'public');
+        }
 
         // update existing match record
         $match->update([
@@ -203,7 +221,7 @@ class MatchController extends Controller
             }
         }
 
-        dispatch(new \App\Jobs\GenerateMatchPreview($match));
+        // dispatch(new \App\Jobs\GenerateMatchPreview($match));
 
         return redirect()->route('matches.show', $match->slug)
                         ->with('success', 'Match updated successfully.');

@@ -23,6 +23,7 @@ class MatchModel extends Model
         'slug',    
         'social_title',
         'social_description',
+        'image_path',
     ];
 
     protected $casts = [

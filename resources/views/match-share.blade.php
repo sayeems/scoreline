@@ -5,26 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ $match->social_title ?? $match->title }}</title>
 
-  {{-- ✅ Open Graph & Twitter meta tags for social sharing --}}
+  {{-- ✅ Universal Open Graph meta tags --}}
   <meta property="og:title" content="{{ $match->social_title ?? $match->title }}" />
   <meta property="og:description" content="{{ $match->social_description ?? 'Check out the full-time result and match details.' }}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ route('matches.show', $match->slug) }}" />
   <meta property="og:site_name" content="Scoreline" />
-  <meta property="og:image" content="{{ asset('storage/previews/'.$match->slug.'.jpg') }}" />
+
+  {{-- ✅ Image: use uploaded file if available --}}
+  @if($match->image_path)
+    <meta property="og:image" content="{{ asset('storage/' . $match->image_path) }}" />
+    <meta name="twitter:image" content="{{ asset('storage/' . $match->image_path) }}" />
+  @else
+    <meta property="og:image" content="{{ asset('storage/previews/'.$match->slug.'.jpg') }}" />
+    <meta name="twitter:image" content="{{ asset('storage/previews/'.$match->slug.'.jpg') }}" />
+  @endif
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
+  {{-- ✅ Twitter + Slack + Discord support --}}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{{ $match->social_title ?? $match->title }}" />
-  <meta name="twitter:description" content="{{ $match->social_description ?? '' }}" />
-  <meta name="twitter:image" content="{{ asset('storage/previews/'.$match->slug.'.jpg') }}" />
+  <meta name="twitter:description" content="{{ $match->social_description ?? 'Check out the full-time result and match details.' }}" />
+
+  {{-- ✅ Extra tags recognized by Slack / Discord / Telegram --}}
+  <meta name="description" content="{{ $match->social_description ?? 'Check out the full-time result and match details.' }}">
+  <meta name="og:locale" content="en_US">
+  <meta name="theme-color" content="#dc2626"> {{-- helps Discord embed color --}}
 
   {{-- ✅ Font + Styling --}}
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: 'Inter', sans-serif;
@@ -105,20 +118,6 @@
       color: #9ca3af;
       margin: 4px 0;
     }
-
-    /* Optional - perfect screenshot fit (if not using clipSelector) */
-    @media screen {
-      body.preview-mode {
-        background: #fff;
-      }
-      .card.fullscreen {
-        width: 1200px;
-        height: 630px;
-        padding: 60px 80px;
-        border-radius: 0;
-        box-shadow: none;
-      }
-    }
   </style>
 </head>
 
@@ -127,7 +126,6 @@
     {{-- Header Section --}}
     <div class="header">
       <div class="team red">
-        {{-- Red shield icon --}}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
@@ -141,7 +139,6 @@
 
       <div class="team blue" style="justify-content: flex-end;">
         <span>{{ $match->team2_name }}</span>
-        {{-- Blue shield icon --}}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
@@ -152,7 +149,6 @@
 
     {{-- Goals Section --}}
     <div class="goals">
-      {{-- Team 1 Goals --}}
       <div class="side">
         @foreach ($match->goals->where('team_side', 'team1') as $goal)
           <div class="goal">
@@ -173,10 +169,8 @@
         @endforeach
       </div>
 
-      {{-- Center icon --}}
       <div class="center-icon">⚽</div>
 
-      {{-- Team 2 Goals --}}
       <div class="side" style="text-align: right;">
         @foreach ($match->goals->where('team_side', 'team2') as $goal)
           <div class="goal" style="justify-content: flex-end;">
