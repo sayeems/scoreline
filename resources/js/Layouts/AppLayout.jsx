@@ -1,5 +1,5 @@
 import { Link, Head, usePage } from "@inertiajs/react";
-import { Plus, ChevronDown } from "lucide-react";
+import { Plus, ChevronDown, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,6 +31,13 @@ export default function AppLayout({ title, children }) {
           <Link href={route("matches.index")} className="flex items-center gap-2">
             <img src="/scoreline-nobg.png" alt="Scoreline" className="h-6 w-auto" />
             <span className="font-semibold text-lg tracking-tight">Scoreline</span>
+          </Link>
+
+          <Link href={route("leaderboard.index")}>
+            <Button variant="outline" size="sm" className="flex items-center gap-2">
+              <Trophy className="w-4 h-4 text-yellow-600" />
+              Leaderboard
+            </Button>
           </Link>
 
           {/* Right side actions */}
