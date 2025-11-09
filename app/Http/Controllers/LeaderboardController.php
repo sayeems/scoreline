@@ -32,13 +32,13 @@ class LeaderboardController extends Controller
             $query->whereYear('matches.match_date', $value);
         }
 
-        $players = $query
-            ->orderByRaw('(total_goals + total_assists) DESC')
-            ->get()
-            ->map(function ($p) {
-                $p->total_contrib = $p->total_goals + $p->total_assists;
-                return $p;
-            });
+        $players = $query->get()
+            ->sortByDesc(fn($p) => $p->total_goals + $p->total_assists)
+            ->values()
+            ->map(fn($p) => [
+                ...$p->toArray(),
+                'total_contrib' => $p->total_goals + $p->total_assists,
+        ]);
 
         return Inertia::render('Leaderboard/Index', [
             'players' => $players,
