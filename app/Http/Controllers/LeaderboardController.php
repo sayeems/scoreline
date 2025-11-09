@@ -14,39 +14,65 @@ class LeaderboardController extends Controller
         $period = $request->get('period', 'all');
         $value  = $request->get('value', null);
 
-        $query = Goal::query()
+        // 🧭 Date filter helper
+        $applyDateFilter = function ($query) use ($period, $value) {
+            if ($period === 'month' && $value) {
+                $date = \Carbon\Carbon::parse($value);
+                $query->whereMonth('matches.match_date', $date->month)
+                    ->whereYear('matches.match_date', $date->year);
+            } elseif ($period === 'year' && $value) {
+                $query->whereYear('matches.match_date', $value);
+            }
+        };
+
+        // ⚽ Scorers
+        $scorers = \App\Models\Goal::query()
             ->join('matches', 'goals.match_id', '=', 'matches.id')
-            ->selectRaw("
-                COALESCE(goals.scorer_name, goals.assistor_name) AS player_name,
-                SUM(CASE WHEN goals.scorer_name IS NOT NULL THEN 1 ELSE 0 END) AS total_goals,
-                SUM(CASE WHEN goals.assistor_name IS NOT NULL THEN 1 ELSE 0 END) AS total_assists
-            ")
-            ->groupBy('player_name');
+            ->selectRaw('LOWER(TRIM(goals.scorer_name)) AS player_name, COUNT(*) AS total_goals')
+            ->whereNotNull('goals.scorer_name')
+            ->where('goals.scorer_name', '!=', '')
+            ->tap($applyDateFilter)
+            ->groupBy('player_name')
+            ->pluck('total_goals', 'player_name')
+            ->toArray();
 
-        // 🗓 Apply filters
-        if ($period === 'month' && $value) {
-            $date = Carbon::parse($value);
-            $query->whereMonth('matches.match_date', $date->month)
-                  ->whereYear('matches.match_date', $date->year);
-        } elseif ($period === 'year' && $value) {
-            $query->whereYear('matches.match_date', $value);
-        }
+        // 🎯 Assistors
+        $assistors = \App\Models\Goal::query()
+            ->join('matches', 'goals.match_id', '=', 'matches.id')
+            ->selectRaw('LOWER(TRIM(goals.assistor_name)) AS player_name, COUNT(*) AS total_assists')
+            ->whereNotNull('goals.assistor_name')
+            ->where('goals.assistor_name', '!=', '')
+            ->tap($applyDateFilter)
+            ->groupBy('player_name')
+            ->pluck('total_assists', 'player_name')
+            ->toArray();
 
-        $players = $query->get()
-            ->sortByDesc(fn($p) => $p->total_goals + $p->total_assists)
-            ->values()
-            ->map(fn($p) => [
-                ...$p->toArray(),
-                'total_contrib' => $p->total_goals + $p->total_assists,
-        ]);
+        // 🔀 Merge both sets properly — include players in either
+        $allPlayers = collect($scorers)->keys()
+            ->merge(array_keys($assistors))
+            ->unique();
 
-        // detect crawler user-agents (for OG preview)
+        $players = $allPlayers->map(function ($name) use ($scorers, $assistors) {
+            $goals = $scorers[$name] ?? 0;
+            $assists = $assistors[$name] ?? 0;
+
+            return [
+                'player_name' => ucfirst($name),
+                'total_goals' => $goals,
+                'total_assists' => $assists,
+                'total_contrib' => $goals + $assists,
+            ];
+        })
+        ->sortByDesc('total_contrib')
+        ->values();
+
+        // 🕸 Detect bots for OG fallback
         $ua = $request->header('User-Agent', '');
         if (preg_match('/facebookexternalhit|Twitterbot|LinkedInBot|Slackbot|Discordbot|TelegramBot|WhatsApp|SkypeUriPreview/i', $ua)) {
             return response()->view('leaderboard-og');
         }
 
-        return Inertia::render('Leaderboard/Index', [
+        return \Inertia\Inertia::render('Leaderboard/Index', [
             'players' => $players,
             'filters' => [
                 'period' => $period,
@@ -54,4 +80,5 @@ class LeaderboardController extends Controller
             ],
         ]);
     }
+
 }
