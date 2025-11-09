@@ -30,46 +30,57 @@ export default function Index({ matches }) {
             >
               {/* Clickable area for match details */}
               <Link
-                href={route("matches.show", match.slug)}
-                className="block hover:scale-[1.01] transition-transform"
-              >
-                {/* Top header */}
-                <div className="flex items-center justify-between text-sm text-gray-500 pb-5">
-                  <span>
-                    {new Date(match.match_date).toLocaleString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric"
-                      })}
-                  </span>
-                  <span className="text-sm text-gray-700">Full-time</span>
-                </div>
-                {/* Teams */}
-                <div className="flex items-center justify-between">
-                  {/* Team 1 */}
-                  <div className="flex flex-col items-center space-y-2 w-1/3">
-                    <ShieldBan className="w-10 h-10 text-red-600" />
-                    <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
-                      {match.team1_name}
-                    </span>
-                  </div>
-                  {/* Score */}
-                  <div className="flex flex-col items-center justify-center w-1/3">
-                    <div className="flex items-center text-4xl font-bold text-gray-900">
-                      <span>{match.team1_score}</span>
-                      <span className="mx-2 text-gray-400">-</span>
-                      <span>{match.team2_score}</span>
-                    </div>
-                  </div>
-                  {/* Team 2 */}
-                  <div className="flex flex-col items-center space-y-2 w-1/3">
-                    <ShieldHalf className="w-10 h-10 text-blue-600" />
-                    <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
-                      {match.team2_name}
-                    </span>
-                  </div>
-                </div>
-              </Link>
+        href={route("matches.show", match.slug)}
+        className="block hover:scale-[1.01] transition-transform"
+      >
+        {/* Scoreline layout */}
+        <div className="relative flex flex-col items-center justify-center bg-white">
+          {/* Header bar (optional) */}
+          <div className="flex items-center justify-between w-full px-6 py-3 text-xs text-gray-500 border-b border-gray-100">
+            <span>
+              {new Date(match.match_date).toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            <span className="uppercase text-gray-700">Full Time</span>
+          </div>
+
+          {/* Main score section */}
+          <div className="flex items-center justify-between w-full px-10 py-6">
+            {/* Team 1 */}
+            <div className="flex flex-col items-center text-center w-1/3">
+              <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                {match.team1_name}
+              </span>
+              <span className="mt-2 text-6xl font-extrabold text-gray-900 leading-none">
+                {match.team1_score}
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="flex flex-col items-center justify-center w-1/3">
+              <div className="w-8 h-[2px] bg-gray-300 mb-2" />
+              <span className="text-gray-400 font-semibold text-sm">VS</span>
+              <div className="w-8 h-[2px] bg-gray-300 mt-2" />
+            </div>
+
+            {/* Team 2 */}
+            <div className="flex flex-col items-center text-center w-1/3">
+              <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                {match.team2_name}
+              </span>
+              <span className="mt-2 text-6xl font-extrabold text-gray-900 leading-none">
+                {match.team2_score}
+              </span>
+            </div>
+          </div>
+
+          {/* Footer accent */}
+          <div className="w-full h-[4px] bg-gradient-to-r from-red-500 via-gray-200 to-blue-500" />
+        </div>
+      </Link>
               {/* Admin buttons */}
               {auth?.user && auth?.isAdmin && (
                 <div className="flex gap-3 mt-4 pt-3 border-t border-gray-100">

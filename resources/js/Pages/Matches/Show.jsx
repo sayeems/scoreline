@@ -30,47 +30,63 @@ export default function Show({ match }) {
   return (
     <AppLayout title={match.title}>
       <div className="max-w-3xl mx-auto py-10 px-4 space-y-6 text-center">
-        {/* Top header */}
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span className="text-transform: capitalize font-semibold text-gray-700">{match.title}</span>
-          <span>{formattedDate}</span>
-          <span className="font-semibold text-gray-700">Full-time</span>
-        </div>
-
         {/* Main result */}
         <Card className="p-6 border border-gray-200 rounded-2xl shadow-sm bg-white">
-          <div className="flex items-center justify-between">
-            {/* Team 1 */}
-            <div className="flex flex-col items-center space-y-2 w-1/3">
-              <ShieldBan className="w-10 h-10 text-red-600" />
-              <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
-                {match.team1_name}
+            {/* Header bar */}
+            <div className="flex items-center justify-between w-full px-6 py-3 text-xs text-gray-500 border-b border-gray-100">
+              <span>
+                {new Date(match.match_date).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </span>
+              <span className="uppercase text-gray-700">Full Time</span>
             </div>
 
-            {/* Score */}
-            <div className="flex flex-col items-center justify-center w-1/3">
-              <div className="flex items-center text-4xl font-bold text-gray-900">
-                <span>{match.team1_score}</span>
-                <span className="mx-2 text-gray-400">-</span>
-                <span>{match.team2_score}</span>
+            {/* Main score section */}
+            <div className="flex items-center justify-between w-full px-10 py-8">
+              {/* Team 1 */}
+              <div className="flex flex-col items-center text-center w-1/3">
+                <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                  {match.team1_name}
+                </span>
+                <span className="mt-2 text-7xl font-extrabold text-gray-900 leading-none">
+                  {match.team1_score}
+                </span>
+              </div>
+
+              {/* Divider */}
+              <div className="flex flex-col items-center justify-center w-1/3">
+                <div className="w-8 h-[2px] bg-gray-300 mb-2" />
+                <span className="text-gray-400 font-semibold text-sm">VS</span>
+                <div className="w-8 h-[2px] bg-gray-300 mt-2" />
+              </div>
+
+              {/* Team 2 */}
+              <div className="flex flex-col items-center text-center w-1/3">
+                <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                  {match.team2_name}
+                </span>
+                <span className="mt-2 text-7xl font-extrabold text-gray-900 leading-none">
+                  {match.team2_score}
+                </span>
               </div>
             </div>
 
-            {/* Team 2 */}
-            <div className="flex flex-col items-center space-y-2 w-1/3">
-              <ShieldHalf className="w-10 h-10 text-blue-600" />
-              <span className="text-transform: capitalize font-semibold text-gray-800 text-lg">
-                {match.team2_name}
-              </span>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="border-t mt-6 mb-4"></div>
+            {/* Footer accent bar */}
+            <div
+              className={`w-full h-[4px] ${
+                match.team1_score > match.team2_score
+                  ? "bg-gradient-to-r from-red-500 via-gray-200 to-blue-200"
+                  : match.team2_score > match.team1_score
+                  ? "bg-gradient-to-r from-red-200 via-gray-200 to-blue-500"
+                  : "bg-gray-300"
+              }`}
+            />
 
           {/* Goals Section */}
-          <div className="grid grid-cols-3 text-sm text-gray-700">
+          <div className="grid grid-cols-3 text-sm text-gray-700 pt-5">
             {/* Team 1 Goals */}
             <div className="text-left space-y-1">
               {team1Goals.length > 0 ? (
@@ -102,7 +118,7 @@ export default function Show({ match }) {
 
             {/* Center icon */}
             <div className="flex items-start justify-center pt-1">
-              <Volleyball className="w-3 h-3 text-gray-400" />
+              <span>⚽</span>
             </div>
 
             {/* Team 2 Goals */}
