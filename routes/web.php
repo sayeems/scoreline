@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\MatchController;
@@ -18,6 +19,8 @@ Route::get('/sayeems', function () {
 
 Route::get('/', [MatchController::class, 'index'])->name('matches.index');
 Route::get('/match/{slug}', [MatchController::class, 'show'])->name('matches.show');
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])
+    ->name('leaderboard.index');
 
 
 Route::get('/dashboard', function () {
