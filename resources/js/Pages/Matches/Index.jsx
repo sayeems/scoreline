@@ -17,8 +17,8 @@ export default function Index({ matches }) {
 
   return (
     <AppLayout title="Match History">
-      <div className="max-w-3xl mx-auto py-10 px-4 space-y-4">
-        <h1 className="text-2xl font-semibold mb-6">Recent Matches</h1>
+      <div className="max-w-3xl mx-auto px-4 space-y-4 md:py-10">
+        <h1 className="text-xl md:text-2xl font-semibold md:mb-6">Recent Matches</h1>
 
         {matches.length === 0 ? (
           <p className="text-gray-500 text-center">No matches available.</p>
@@ -26,7 +26,7 @@ export default function Index({ matches }) {
           matches.map((match) => (
             <Card
               key={match.id}
-              className="text-transform: capitalize p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all"
+              className="text-transform: capitalize p-2 md:p-4 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-all"
             >
               {/* Clickable area for match details */}
               <Link
@@ -48,7 +48,7 @@ export default function Index({ matches }) {
           </div>
 
           {/* Main score section */}
-          <div className="flex items-center justify-between w-full px-10 py-6">
+          <div className="flex items-center justify-between w-full px-4 py-2 md:px-10 md:py-6">
             {/* Team 1 */}
             <div className="flex flex-col items-center text-center w-1/3">
               <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">

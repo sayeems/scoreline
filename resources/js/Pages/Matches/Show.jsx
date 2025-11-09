@@ -29,11 +29,11 @@ export default function Show({ match }) {
 
   return (
     <AppLayout title={match.title}>
-      <div className="max-w-3xl mx-auto py-10 px-4 space-y-6 text-center">
+      <div className="max-w-3xl mx-auto py-2 md:py-10 px-4 space-y-6 text-center">
         {/* Main result */}
         <Card className="p-6 border border-gray-200 rounded-2xl shadow-sm bg-white">
             {/* Header bar */}
-            <div className="flex items-center justify-between w-full px-6 py-3 text-xs text-gray-500 border-b border-gray-100">
+            <div className="flex items-center justify-between w-full px-2 md:px-6 md:py-3 py-1 text-xs text-gray-500 border-b border-gray-100">
               <span>
                 {new Date(match.match_date).toLocaleString("en-US", {
                   month: "short",
@@ -45,13 +45,13 @@ export default function Show({ match }) {
             </div>
 
             {/* Main score section */}
-            <div className="flex items-center justify-between w-full px-10 py-8">
+            <div className="flex items-center justify-between w-full p-2 md:px-10 md:py-8">
               {/* Team 1 */}
               <div className="flex flex-col items-center text-center w-1/3">
-                <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                <span className="text-[.9rem] md:text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
                   {match.team1_name}
                 </span>
-                <span className="mt-2 text-7xl font-extrabold text-gray-900 leading-none">
+                <span className="mt-2 text-5xl md:text-7xl font-extrabold text-gray-900 leading-none">
                   {match.team1_score}
                 </span>
               </div>
@@ -65,10 +65,10 @@ export default function Show({ match }) {
 
               {/* Team 2 */}
               <div className="flex flex-col items-center text-center w-1/3">
-                <span className="text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
+                <span className="text-[.9rem] md:text-[1rem] font-bold text-gray-800 uppercase tracking-wide">
                   {match.team2_name}
                 </span>
-                <span className="mt-2 text-7xl font-extrabold text-gray-900 leading-none">
+                <span className="mt-2 text-5xl md:text-7xl font-extrabold text-gray-900 leading-none">
                   {match.team2_score}
                 </span>
               </div>
@@ -122,18 +122,18 @@ export default function Show({ match }) {
             </div>
 
             {/* Team 2 Goals */}
-            <div className="text-transform: capitalize text-right space-y-1">
+            <div className="text-transform: capitalize text-right space-y-1 xs:text-[.1rem]">
               {team2Goals.length > 0 ? (
                 team2Goals.map((goal, i) => (
                   <p key={i}>
-                    {goal.time && (
-                      <span className="text-gray-400 text-xs">{goal.time}' </span>
-                    )}
                     {goal.scorer_name}{" "}
                     {goal.assistor_name && (
                       <span className="text-gray-500">
                         ({goal.assistor_name})
                       </span>
+                    )}
+                    {goal.time && (
+                      <span className="text-gray-400 text-xs"> {goal.time}'</span>
                     )}
                   </p>
                 ))

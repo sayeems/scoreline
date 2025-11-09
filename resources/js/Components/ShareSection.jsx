@@ -39,14 +39,14 @@ export default function ShareSection({ match }) {
       <h3 className="text-sm text-gray-500 mb-3">Share this match</h3>
       <div className="flex justify-center gap-3 flex-wrap">
         {/* Facebook Share */}
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           onClick={() => window.open(facebookShare, "_blank", "noopener,noreferrer")}
         >
           <Facebook className="w-4 h-4 mr-1 text-blue-600" />
           Share on Facebook
-        </Button>
+        </Button> */}
 
         {/* Copy Link */}
         <Button variant="outline" size="sm" onClick={copyLink}>
