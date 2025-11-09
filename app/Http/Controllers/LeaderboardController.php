@@ -40,6 +40,12 @@ class LeaderboardController extends Controller
                 'total_contrib' => $p->total_goals + $p->total_assists,
         ]);
 
+        // detect crawler user-agents (for OG preview)
+        $ua = $request->header('User-Agent', '');
+        if (preg_match('/facebookexternalhit|Twitterbot|LinkedInBot|Slackbot|Discordbot|TelegramBot|WhatsApp|SkypeUriPreview/i', $ua)) {
+            return response()->view('leaderboard-og');
+        }
+
         return Inertia::render('Leaderboard/Index', [
             'players' => $players,
             'filters' => [
